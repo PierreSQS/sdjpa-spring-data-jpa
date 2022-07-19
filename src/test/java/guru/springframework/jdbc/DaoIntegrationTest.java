@@ -16,7 +16,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Created by jt on 8/28/21.
+ * Modified by Pierrot on 7/20/22.
  */
 @ActiveProfiles("local")
 @DataJpaTest
@@ -102,13 +102,17 @@ public class DaoIntegrationTest {
         author.setFirstName("john");
         author.setLastName("t");
 
+        System.out.printf("%n###### the author to delete: %s %s ######%n%n"
+                , author.getFirstName(), author.getLastName());
+
         Author saved = authorDao.saveNewAuthor(author);
+        Long id = saved.getId();
 
-        authorDao.deleteAuthorById(saved.getId());
+        authorDao.deleteAuthorById(id);
+        Author deleted = authorDao.findAuthorById(id);
 
-        assertThrows(EmptyResultDataAccessException.class, () -> {
-            Author deleted = authorDao.getById(saved.getId());
-        });
+        assertThrows(EmptyResultDataAccessException.class, () ->
+                authorDao.findAuthorById(id));
 
     }
 
@@ -118,22 +122,32 @@ public class DaoIntegrationTest {
         author.setFirstName("john");
         author.setLastName("t");
 
+        System.out.printf("%n###### the author to update: %s %s ######%n%n"
+                , author.getFirstName(), author.getLastName());
+
         Author saved = authorDao.saveNewAuthor(author);
 
         saved.setLastName("Thompson");
         Author updated = authorDao.updateAuthor(saved);
 
         assertThat(updated.getLastName()).isEqualTo("Thompson");
+
+        System.out.printf("%n###### the updated author name: %s %s -ID: %d ######%n%n"
+                , updated.getFirstName(), updated.getLastName(),updated.getId());
     }
 
     @Test
-    void testSaveAuthor() {
+    void testInsertAuthor() {
         Author author = new Author();
         author.setFirstName("John");
         author.setLastName("Thompson");
         Author saved = authorDao.saveNewAuthor(author);
 
         assertThat(saved).isNotNull();
+        assertThat(saved.getId()).isNotNull();
+
+        System.out.printf("%n###### the saved author name: %s %s -ID: %s ######%n%n"
+                , author.getFirstName(), author.getLastName(), author.getId());
     }
 
     @Test
@@ -141,14 +155,14 @@ public class DaoIntegrationTest {
         Author author = authorDao.findAuthorByName("Craig", "Walls");
 
         assertThat(author).isNotNull();
+        System.out.printf("%n###### the found author name: %s ######%n%n", author.getLastName());
     }
 
     @Test
-    void testGetAuthor() {
-
-        Author author = authorDao.getById(1L);
-
-        assertThat(author).isNotNull();
+    void testGetAuthorById() {
+        Author author = authorDao.findAuthorById(2L);
+        assertThat(author.getId()).isNotNull();
+        System.out.printf("%n###### the found author name: %s ######%n%n", author.getLastName());
 
     }
 }
