@@ -6,6 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class BookDaoImpl implements BookDao{
     private final BookRepository bookRepo;
@@ -31,6 +33,12 @@ public class BookDaoImpl implements BookDao{
 
     @Override
     public Book updateBook(Book book) {
+        Optional<Book> foundBookOpt = bookRepo.findById(book.getId());
+        if (foundBookOpt.isPresent()) {
+            Book foundBook1 = foundBookOpt.get();
+            foundBook1.setTitle(book.getTitle());
+            return foundBook1;
+        }
         return null;
     }
 
