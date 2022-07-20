@@ -4,6 +4,7 @@ import guru.springframework.jdbc.domain.Author;
 import guru.springframework.jdbc.repositories.AuthorRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -35,10 +36,18 @@ public class AuthorDaoImpl implements AuthorDao {
         return authorRepo.save(author);
     }
 
+    @Transactional
     @Override
     public Author updateAuthor(Author author) {
         Optional<Author> foundAuthorOpt = authorRepo.findById(author.getId());
-        return foundAuthorOpt.map(authorRepo::save).orElse(null);
+        if (foundAuthorOpt.isPresent()) {
+            Author foundAuthor = foundAuthorOpt.get();
+            foundAuthor.setFirstName(author.getFirstName());
+            foundAuthor.setLastName(author.getLastName());
+            authorRepo.save(foundAuthor);
+            return foundAuthor;
+        }
+        return null;
     }
 
     @Override
