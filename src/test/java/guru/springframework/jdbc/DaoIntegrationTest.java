@@ -37,12 +37,11 @@ class DaoIntegrationTest {
         book.setPublisher("Self");
         book.setTitle("my book");
         Book saved = bookDao.saveNewBook(book);
+        long savedId = saved.getId();
 
-        bookDao.deleteBookById(saved.getId());
+        bookDao.deleteBookById(savedId);
 
-        Book deleted = bookDao.findBookById(saved.getId());
-
-        assertThat(deleted).isNull();
+        assertThrows(EmptyResultDataAccessException.class,() ->bookDao.findBookById(savedId) );
     }
 
     @Test
