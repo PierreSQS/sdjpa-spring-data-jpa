@@ -109,7 +109,6 @@ public class DaoIntegrationTest {
         Long id = saved.getId();
 
         authorDao.deleteAuthorById(id);
-        Author deleted = authorDao.findAuthorById(id);
 
         assertThrows(EmptyResultDataAccessException.class, () ->
                 authorDao.findAuthorById(id));
@@ -131,6 +130,8 @@ public class DaoIntegrationTest {
         Author updated = authorDao.updateAuthor(saved);
 
         assertThat(updated.getLastName()).isEqualTo("Thompson");
+        // Made the test more accurate
+        assertThat(saved.getId()).isEqualTo(updated.getId());
 
         System.out.printf("%n###### the updated author name: %s %s -ID: %d ######%n%n"
                 , updated.getFirstName(), updated.getLastName(),updated.getId());
