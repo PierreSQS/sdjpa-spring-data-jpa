@@ -2,10 +2,14 @@ package guru.springframework.jdbc.dao;
 
 import guru.springframework.jdbc.domain.Book;
 
+import java.util.List;
+
 /**
  * Modified by Pierrot on 7/20/22.
  */
 public interface BookDao {
+
+    List<Book> findAllBooks();
 
     Book findBookById(Long id);
 

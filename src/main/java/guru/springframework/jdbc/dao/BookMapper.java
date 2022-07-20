@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 public class BookMapper {
     public static final String SELECT_BOOK_BY_TITLE = "SELECT * FROM BOOK WHERE title = ?";
     public static final String SELECT_BOOK_BY_ID = "SELECT * FROM BOOK WHERE id = ?";
+    public static final String ALL_BOOKS = "SELECT * FROM BOOK";
     public static final String INSERT_BOOK =
             "INSERT INTO BOOK (isbn, publisher, title, author_id) VALUES (?, ?, ?, ?)";
     public static final String SELECT_LAST_INSERT_ID = "SELECT LAST_INSERT_ID()";

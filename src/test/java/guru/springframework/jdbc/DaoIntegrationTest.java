@@ -5,6 +5,7 @@ import guru.springframework.jdbc.dao.BookDao;
 import guru.springframework.jdbc.domain.Author;
 import guru.springframework.jdbc.domain.Book;
 import jakarta.persistence.EntityNotFoundException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -13,7 +14,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import java.util.List;
+
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -29,6 +33,19 @@ class DaoIntegrationTest {
 
     @Autowired
     BookDao bookDao;
+
+    @Test
+    void testFindAllBooks() {
+        List<Book> allBooks = bookDao.findAllBooks();
+        assertThat(allBooks)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSizeGreaterThan(4);
+
+        System.out.printf("%n###### following the books in test ######%n");
+        allBooks.forEach(book -> System.out.println(book.getTitle()+" "+book.getPublisher()));
+        System.out.println();
+    }
 
     @Test
     void testDeleteBook() {

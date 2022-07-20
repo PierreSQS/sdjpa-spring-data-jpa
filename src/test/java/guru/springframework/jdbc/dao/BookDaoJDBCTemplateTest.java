@@ -11,7 +11,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("local")
@@ -28,6 +30,19 @@ class BookDaoJDBCTemplateTest {
     @BeforeEach
     void setUp() {
         bookDao = new BookDaoJDBCTemplate(jdbcTemplate);
+    }
+
+    @Test
+    void testFindAllBooks() {
+        List<Book> allBooks = bookDao.findAllBooks();
+        assertThat(allBooks)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSizeGreaterThan(4);
+
+        System.out.printf("%n###### following the books in test ######%n");
+        allBooks.forEach(book -> System.out.println(book.getTitle()+" "+book.getPublisher()));
+        System.out.println();
     }
 
     @Test
