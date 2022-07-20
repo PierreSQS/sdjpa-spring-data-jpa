@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DataJpaTest
 @ComponentScan(basePackages = {"guru.springframework.jdbc.dao"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class DaoIntegrationTest {
+class DaoIntegrationTest {
     @Autowired
     AuthorDao authorDao;
 
@@ -58,9 +57,9 @@ public class DaoIntegrationTest {
         Book saved = bookDao.saveNewBook(book);
 
         saved.setTitle("New Book");
-        bookDao.updateBook(saved);
+        Book updatedBook = bookDao.updateBook(saved);
 
-        Book fetched = bookDao.findBookById(saved.getId());
+        Book fetched = bookDao.findBookById(updatedBook.getId());
 
         assertThat(fetched.getTitle()).isEqualTo("New Book");
     }
