@@ -2,52 +2,47 @@ package guru.springframework.jdbc.dao;
 
 import guru.springframework.jdbc.domain.Book;
 import guru.springframework.jdbc.repositories.BookRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by jt on 10/23/21.
+ * Modified by Pierrot on 7/20/22.
  */
 @Component
-public class BookDaoImpl implements BookDao {
+public class BookDaoImpl implements BookDao{
+    private final BookRepository bookRepo;
 
-    private final BookRepository bookRepository;
-
-    public BookDaoImpl(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
+    public BookDaoImpl(BookRepository bookRepo) {
+        this.bookRepo = bookRepo;
     }
 
     @Override
-    public Book getById(Long id) {
-        return bookRepository.getById(id);
+    public Book findBookById(Long id) {
+        return bookRepo.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
     }
 
     @Override
     public Book findBookByTitle(String title) {
-        return bookRepository.findBookByTitle(title).orElseThrow(EntityNotFoundException::new);
+        return bookRepo.findBookByTitle(title).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     public Book saveNewBook(Book book) {
-        return bookRepository.save(book);
+        return bookRepo.save(book);
     }
 
     @Transactional
     @Override
     public Book updateBook(Book book) {
-        Book foundBook = bookRepository.getById(book.getId());
-        foundBook.setIsbn(book.getIsbn());
-        foundBook.setPublisher(book.getPublisher());
-        foundBook.setAuthorId(book.getAuthorId());
-        foundBook.setTitle(book.getTitle());
-        return bookRepository.save(foundBook);
+        return null;
     }
 
     @Override
     public void deleteBookById(Long id) {
-        bookRepository.deleteById(id);
+        bookRepo.deleteById(id);
     }
 }
 
