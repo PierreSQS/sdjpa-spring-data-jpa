@@ -59,9 +59,9 @@ class DaoIntegrationTest {
         Book saved = bookDao.saveNewBook(book);
 
         saved.setTitle("New Book");
-        bookDao.updateBook(saved);
+        Book updateBook = bookDao.updateBook(saved);
 
-        Book fetched = bookDao.findBookById(saved.getId());
+        Book fetched = bookDao.findBookById(updateBook.getId());
 
         assertThat(fetched.getTitle()).isEqualTo("New Book");
     }
