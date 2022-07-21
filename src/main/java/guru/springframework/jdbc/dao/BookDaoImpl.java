@@ -40,7 +40,7 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> findAllBooks() {
-        return null;
+        return bookRepo.findAll();
     }
 
     @Override
