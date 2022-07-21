@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Modified by Pierrot on 7/21/22.
@@ -49,10 +50,15 @@ public class AuthorDaoImpl implements AuthorDao {
     @Transactional
     @Override
     public Author updateAuthor(Author author) {
-        Author foundAuthor = authorRepo.getById(author.getId());
-        foundAuthor.setFirstName(author.getFirstName());
-        foundAuthor.setLastName(author.getLastName());
-        return authorRepo.save(foundAuthor);
+        Optional<Author> foundAuthorOpt = authorRepo.findById(author.getId());
+        if (foundAuthorOpt.isPresent()) {
+            Author foundAuthor = foundAuthorOpt.get();
+            foundAuthor.setFirstName(author.getFirstName());
+            foundAuthor.setLastName(author.getLastName());
+            authorRepo.save(foundAuthor);
+            return foundAuthor;
+        }
+        return null;
     }
 
     @Override

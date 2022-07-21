@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Modified by Pierrot on 7/21/22.
@@ -60,12 +61,13 @@ public class BookDaoImpl implements BookDao {
     @Transactional
     @Override
     public Book updateBook(Book book) {
-        Book foundBook = bookRepo.getById(book.getId());
-        foundBook.setIsbn(book.getIsbn());
-        foundBook.setPublisher(book.getPublisher());
-        foundBook.setAuthorId(book.getAuthorId());
-        foundBook.setTitle(book.getTitle());
-        return bookRepo.save(foundBook);
+        Optional<Book> foundBookOpt = bookRepo.findById(book.getId());
+        if (foundBookOpt.isPresent()) {
+            Book foundBook1 = foundBookOpt.get();
+            foundBook1.setTitle(book.getTitle());
+            return foundBook1;
+        }
+        return null;
     }
 
     @Override
