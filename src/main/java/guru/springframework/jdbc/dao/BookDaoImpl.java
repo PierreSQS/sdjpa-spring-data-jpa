@@ -3,6 +3,7 @@ package guru.springframework.jdbc.dao;
 import guru.springframework.jdbc.domain.Book;
 import guru.springframework.jdbc.repositories.BookRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +36,8 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> findAllBooks(int pageSize, int offset) {
-        return null;
+        int page = offset/pageSize;
+        return bookRepo.findAll(PageRequest.of(page,pageSize)).getContent();
     }
 
     @Override
