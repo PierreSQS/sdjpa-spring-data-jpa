@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
 
 /**
- * Created by jt on 11/26/21.
+ * Modified by Pierrot on 7/21/22.
  */
 public class AuthorDaoJDBCTemplate implements AuthorDao {
 
@@ -30,11 +30,7 @@ public class AuthorDaoJDBCTemplate implements AuthorDao {
 
         sb.append(" limit ? offset ?");
 
-        return jdbcTemplate.query(sb.toString(), getAuthorMapper(), lastname, pageable.getPageSize(), pageable.getOffset());
-    }
-
-    private AuthorMapper getAuthorMapper() {
-        return new AuthorMapper();
+        return jdbcTemplate.query(sb.toString(), AuthorMapper.authorRowMapper, lastname, pageable.getPageSize(), pageable.getOffset());
     }
 
     @Override

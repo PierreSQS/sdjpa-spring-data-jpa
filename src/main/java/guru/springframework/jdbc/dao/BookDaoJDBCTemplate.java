@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
 
 /**
- * Created by jt on 11/25/21.
+ * Modified by Pierrot on 7/21/22.
  */
 public class BookDaoJDBCTemplate implements BookDao {
     private final JdbcTemplate jdbcTemplate;
@@ -24,33 +24,33 @@ public class BookDaoJDBCTemplate implements BookDao {
 
         System.out.println(sql);
 
-        return jdbcTemplate.query(sql, getBookMapper(), pageable.getPageSize(), pageable.getOffset());
+        return jdbcTemplate.query(sql, BookMapper.bookRowMapper, pageable.getPageSize(), pageable.getOffset());
     }
 
     @Override
     public List<Book> findAllBooks(Pageable pageable) {
-        return jdbcTemplate.query("SELECT * FROM book limit ? offset ?", getBookMapper(), pageable.getPageSize(),
+        return jdbcTemplate.query("SELECT * FROM book limit ? offset ?", BookMapper.bookRowMapper, pageable.getPageSize(),
                 pageable.getOffset());
     }
 
     @Override
     public List<Book> findAllBooks(int pageSize, int offset) {
-        return jdbcTemplate.query("SELECT * FROM book limit ? offset ?", getBookMapper(), pageSize, offset);
+        return jdbcTemplate.query("SELECT * FROM book limit ? offset ?", BookMapper.bookRowMapper, pageSize, offset);
     }
 
     @Override
     public List<Book> findAllBooks() {
-        return jdbcTemplate.query("SELECT * FROM book", getBookMapper());
+        return jdbcTemplate.query("SELECT * FROM book", BookMapper.bookRowMapper);
     }
 
     @Override
     public Book findBookById(Long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM book where id = ?", getBookMapper(), id);
+        return jdbcTemplate.queryForObject("SELECT * FROM book where id = ?", BookMapper.bookRowMapper, id);
     }
 
     @Override
     public Book findBookByTitle(String title) {
-        return jdbcTemplate.queryForObject("SELECT * FROM book where title = ?", getBookMapper(), title);
+        return jdbcTemplate.queryForObject("SELECT * FROM book where title = ?", BookMapper.bookRowMapper, title);
     }
 
     @Override
@@ -76,7 +76,4 @@ public class BookDaoJDBCTemplate implements BookDao {
         jdbcTemplate.update("DELETE from book where id = ?", id);
     }
 
-    private BookMapper getBookMapper(){
-        return new BookMapper();
-    }
 }
