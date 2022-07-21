@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -30,6 +31,42 @@ class BookDaoJDBCTemplateTest {
     @BeforeEach
     void setUp() {
         bookDao = new BookDaoJDBCTemplate(jdbcTemplate);
+    }
+
+    @Test
+    void testFindAllBooksWithPaging1_pageable() {
+        List<Book> allBooks = bookDao.findAllBooks(PageRequest.of(0, 10));
+        assertThat(allBooks)
+                .isNotNull()
+                .hasSize(10);
+
+        System.out.printf("%n###### following the books in test ######%n");
+        allBooks.forEach(book -> System.out.println(book.getTitle()+" "+book.getPublisher()));
+        System.out.println();
+    }
+
+    @Test
+    void testFindAllBooksWithPaging2_pageable() {
+        List<Book> allBooks = bookDao.findAllBooks(PageRequest.of(1,10));
+        assertThat(allBooks)
+                .isNotNull()
+                .hasSize(10);
+
+        System.out.printf("%n###### following the books in test ######%n");
+        allBooks.forEach(book -> System.out.println(book.getTitle()+" "+book.getPublisher()));
+        System.out.println();
+    }
+
+    @Test
+    void testFindAllBooksWithPagingX_pageable() {
+        List<Book> allBooks = bookDao.findAllBooks(PageRequest.of(1,100));
+        assertThat(allBooks)
+                .isNotNull()
+                .isEmpty();
+
+        System.out.printf("%n###### following the books in test ######%n");
+        allBooks.forEach(book -> System.out.println(book.getTitle()+" "+book.getPublisher()));
+        System.out.println();
     }
 
     @Test
