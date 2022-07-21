@@ -4,6 +4,7 @@ import guru.springframework.jdbc.domain.Book;
 import org.springframework.jdbc.core.RowMapper;
 
 public class BookMapper {
+    public static final String SELECT_BOOK_OFFSET_LIMIT = "SELECT * FROM BOOK limit ? offset ?";
     public static final String SELECT_BOOK_BY_TITLE = "SELECT * FROM BOOK WHERE title = ?";
     public static final String SELECT_BOOK_BY_ID = "SELECT * FROM BOOK WHERE id = ?";
     public static final String ALL_BOOKS = "SELECT * FROM BOOK";

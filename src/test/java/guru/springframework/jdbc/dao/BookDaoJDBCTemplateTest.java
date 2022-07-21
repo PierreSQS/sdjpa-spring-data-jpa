@@ -36,7 +36,7 @@ class BookDaoJDBCTemplateTest {
     void testFindAllBooksWithPaging1() {
         List<Book> allBooks = bookDao.findAllBooks(10,0);
         assertThat(allBooks)
-                .isNotEmpty()
+                .isNotNull()
                 .hasSize(10);
 
         System.out.printf("%n###### following the books in test ######%n");
@@ -49,7 +49,6 @@ class BookDaoJDBCTemplateTest {
         List<Book> allBooks = bookDao.findAllBooks(10,10);
         assertThat(allBooks)
                 .isNotNull()
-                .isNotEmpty()
                 .hasSize(10);
 
         System.out.printf("%n###### following the books in test ######%n");
@@ -62,8 +61,7 @@ class BookDaoJDBCTemplateTest {
         List<Book> allBooks = bookDao.findAllBooks(10,100);
         assertThat(allBooks)
                 .isNotNull()
-                .isNotEmpty()
-                .hasSize(10);
+                .isEmpty();
 
         System.out.printf("%n###### following the books in test ######%n");
         allBooks.forEach(book -> System.out.println(book.getTitle()+" "+book.getPublisher()));
