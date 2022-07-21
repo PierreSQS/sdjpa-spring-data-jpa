@@ -4,6 +4,7 @@ import guru.springframework.jdbc.domain.Author;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,18 +20,25 @@ public class AuthorDaoJDBCTemplate implements AuthorDao {
 
     @Override
     public List<Author> findAllAuthorsByLastName(String lastname, Pageable pageable) {
-        StringBuilder sb = new StringBuilder();
+        try {
+            StringBuilder sb = new StringBuilder();
 
-        sb.append("SELECT * FROM author WHERE last_name = ? ");
+            sb.append(AuthorMapper.SELECT_AUTHOR_BY_LAST_NAME);
 
-        if (pageable.getSort().getOrderFor("firstname") != null) {
-            sb.append("order by first_name ").append(pageable.getSort()
-                    .getOrderFor("firstname").getDirection().name());
+            if (pageable.getSort().getOrderFor("firstname") != null) {
+                sb.append("order by first_name ").append(pageable.getSort()
+                        .getOrderFor("firstname").getDirection().name());
+            }
+
+            sb.append(" limit ? offset ?");
+
+            return jdbcTemplate.query(sb.toString(), AuthorMapper.authorRowMapper,
+                    lastname, pageable.getPageSize(), pageable.getOffset());
+
+        } catch (NullPointerException npe) {
+            return Collections.emptyList();
         }
 
-        sb.append(" limit ? offset ?");
-
-        return jdbcTemplate.query(sb.toString(), AuthorMapper.authorRowMapper, lastname, pageable.getPageSize(), pageable.getOffset());
     }
 
     @Override

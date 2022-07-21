@@ -1,6 +1,7 @@
 package guru.springframework.jdbc.dao;
 
 import guru.springframework.jdbc.domain.Book;
+import java.util.Collections;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -18,54 +19,63 @@ public class BookDaoJDBCTemplate implements BookDao {
 
     @Override
     public List<Book> findAllBooksSortByTitle(Pageable pageable) {
-        String sql = "SELECT * FROM book order by title " + pageable
-                .getSort().getOrderFor("title").getDirection().name()
-                + " limit ? offset ?";
+        try {
+            String sql = BookMapper.SELECT_BOOK_ORDER_BY_TITLE + pageable
+                    .getSort().getOrderFor("title").getDirection().name()
+                    + " limit ? offset ?";
 
-        System.out.println(sql);
+            System.out.println(sql);
 
-        return jdbcTemplate.query(sql, BookMapper.bookRowMapper, pageable.getPageSize(), pageable.getOffset());
+            return jdbcTemplate.query(sql, BookMapper.bookRowMapper,
+                    pageable.getPageSize(), pageable.getOffset());
+        } catch (NullPointerException npe){
+            npe.printStackTrace();
+            return Collections.emptyList();
+        }
+
     }
 
     @Override
     public List<Book> findAllBooks(Pageable pageable) {
-        return jdbcTemplate.query("SELECT * FROM book limit ? offset ?", BookMapper.bookRowMapper, pageable.getPageSize(),
+        return jdbcTemplate.query(BookMapper.SELECT_BOOK_OFFSET_LIMIT,
+                BookMapper.bookRowMapper, pageable.getPageSize(),
                 pageable.getOffset());
     }
 
     @Override
     public List<Book> findAllBooks(int pageSize, int offset) {
-        return jdbcTemplate.query("SELECT * FROM book limit ? offset ?", BookMapper.bookRowMapper, pageSize, offset);
+        return jdbcTemplate.query(BookMapper.SELECT_BOOK_OFFSET_LIMIT,
+                BookMapper.bookRowMapper, pageSize, offset);
     }
 
     @Override
     public List<Book> findAllBooks() {
-        return jdbcTemplate.query("SELECT * FROM book", BookMapper.bookRowMapper);
+        return jdbcTemplate.query(BookMapper.ALL_BOOKS, BookMapper.bookRowMapper);
     }
 
     @Override
     public Book findBookById(Long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM book where id = ?", BookMapper.bookRowMapper, id);
+        return jdbcTemplate.queryForObject(BookMapper.SELECT_BOOK_BY_ID, BookMapper.bookRowMapper, id);
     }
 
     @Override
     public Book findBookByTitle(String title) {
-        return jdbcTemplate.queryForObject("SELECT * FROM book where title = ?", BookMapper.bookRowMapper, title);
+        return jdbcTemplate.queryForObject(BookMapper.SELECT_BOOK_BY_TITLE, BookMapper.bookRowMapper, title);
     }
 
     @Override
     public Book saveNewBook(Book book) {
-        jdbcTemplate.update("INSERT INTO book (isbn, publisher, title, author_id) VALUES (?, ?, ?, ?)",
+        jdbcTemplate.update(BookMapper.INSERT_BOOK,
                 book.getIsbn(), book.getPublisher(), book.getTitle(), book.getAuthorId());
 
-        Long createdId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        Long createdId = jdbcTemplate.queryForObject(BookMapper.SELECT_LAST_INSERT_ID, Long.class);
 
         return this.findBookById(createdId);
     }
 
     @Override
     public Book updateBook(Book book) {
-        jdbcTemplate.update("UPDATE book set isbn = ?, publisher = ?, title = ?, author_id = ? where id = ?",
+        jdbcTemplate.update(BookMapper.UPDATE_BOOK,
                 book.getIsbn(), book.getPublisher(), book.getTitle(), book.getAuthorId(), book.getId());
 
         return this.findBookById(book.getId());
@@ -73,7 +83,7 @@ public class BookDaoJDBCTemplate implements BookDao {
 
     @Override
     public void deleteBookById(Long id) {
-        jdbcTemplate.update("DELETE from book where id = ?", id);
+        jdbcTemplate.update(BookMapper.DELETE_BOOK, id);
     }
 
 }
