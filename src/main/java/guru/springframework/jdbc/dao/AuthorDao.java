@@ -12,7 +12,7 @@ public interface AuthorDao {
 
     List<Author> findAllAuthorsByLastName(String lastname, Pageable pageable);
 
-    Author getById(Long id);
+    Author findAuthorById(Long id);
 
     Author findAuthorByName(String firstName, String lastName);
 

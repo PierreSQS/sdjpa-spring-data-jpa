@@ -44,7 +44,7 @@ public class BookDaoJDBCTemplate implements BookDao {
     }
 
     @Override
-    public Book getById(Long id) {
+    public Book findBookById(Long id) {
         return jdbcTemplate.queryForObject("SELECT * FROM book where id = ?", getBookMapper(), id);
     }
 
@@ -60,7 +60,7 @@ public class BookDaoJDBCTemplate implements BookDao {
 
         Long createdId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
 
-        return this.getById(createdId);
+        return this.findBookById(createdId);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class BookDaoJDBCTemplate implements BookDao {
         jdbcTemplate.update("UPDATE book set isbn = ?, publisher = ?, title = ?, author_id = ? where id = ?",
                 book.getIsbn(), book.getPublisher(), book.getTitle(), book.getAuthorId(), book.getId());
 
-        return this.getById(book.getId());
+        return this.findBookById(book.getId());
     }
 
     @Override

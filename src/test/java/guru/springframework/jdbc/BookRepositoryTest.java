@@ -67,9 +67,8 @@ public class BookRepositoryTest {
     void testBookStream() {
         AtomicInteger count = new AtomicInteger();
 
-        bookRepository.findAllByTitleNotNull().forEach(book -> {
-            count.incrementAndGet();
-        });
+        bookRepository.findAllByTitleNotNull().forEach(book ->
+            count.incrementAndGet());
 
         assertThat(count.get()).isGreaterThan(5);
     }
@@ -77,9 +76,8 @@ public class BookRepositoryTest {
     @Test
     void testEmptyResultException() {
 
-        assertThrows(EmptyResultDataAccessException.class, () -> {
-            Book book = bookRepository.readByTitle("foobar4");
-        });
+        assertThrows(EmptyResultDataAccessException.class, () ->
+                bookRepository.readByTitle("foobar4"));
     }
 
     @Test

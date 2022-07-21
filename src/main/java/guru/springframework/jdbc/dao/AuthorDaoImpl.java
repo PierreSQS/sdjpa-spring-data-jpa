@@ -2,6 +2,7 @@ package guru.springframework.jdbc.dao;
 
 import guru.springframework.jdbc.domain.Author;
 import guru.springframework.jdbc.repositories.AuthorRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,15 +12,15 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 
 /**
- * Created by jt on 8/28/21.
+ * Modified by Pierrot on 7/21/22.
  */
 @Component
 public class AuthorDaoImpl implements AuthorDao {
 
-    private final AuthorRepository authorRepository;
+    private final AuthorRepository authorRepo;
 
-    public AuthorDaoImpl(AuthorRepository authorRepository) {
-        this.authorRepository = authorRepository;
+    public AuthorDaoImpl(AuthorRepository authorRepo) {
+        this.authorRepo = authorRepo;
     }
 
     @Override
@@ -28,33 +29,35 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
-    public Author getById(Long id) {
-        return authorRepository.getById(id);
+    public Author findAuthorById(Long id) {
+
+        return authorRepo.findById(id).orElseThrow(() ->
+                new EmptyResultDataAccessException(1));
     }
 
     @Override
     public Author findAuthorByName(String firstName, String lastName) {
-        return authorRepository.findAuthorByFirstNameAndLastName(firstName, lastName)
+        return authorRepo.findAuthorByFirstNameAndLastName(firstName, lastName)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     public Author saveNewAuthor(Author author) {
-        return authorRepository.save(author);
+        return authorRepo.save(author);
     }
 
     @Transactional
     @Override
     public Author updateAuthor(Author author) {
-        Author foundAuthor = authorRepository.getById(author.getId());
+        Author foundAuthor = authorRepo.getById(author.getId());
         foundAuthor.setFirstName(author.getFirstName());
         foundAuthor.setLastName(author.getLastName());
-        return authorRepository.save(foundAuthor);
+        return authorRepo.save(foundAuthor);
     }
 
     @Override
     public void deleteAuthorById(Long id) {
-        authorRepository.deleteById(id);
+        authorRepo.deleteById(id);
     }
 }
 

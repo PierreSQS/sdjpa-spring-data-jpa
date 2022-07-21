@@ -2,8 +2,6 @@ package guru.springframework.jdbc;
 
 import guru.springframework.jdbc.dao.AuthorDao;
 import guru.springframework.jdbc.dao.BookDao;
-import guru.springframework.jdbc.dao.AuthorDaoImpl;
-import guru.springframework.jdbc.dao.BookDaoImpl;
 import guru.springframework.jdbc.domain.Author;
 import guru.springframework.jdbc.domain.Book;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,21 +9,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Created by jt on 8/28/21.
+ * Modified by Pierrot on 7/21/22.
  */
 @ActiveProfiles("local")
 @DataJpaTest
-@Import({AuthorDaoImpl.class, BookDaoImpl.class})
+@ComponentScan(basePackages = {"guru.springframework.jdbc.dao"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class DaoIntegrationTest {
+class DaoIntegrationTest {
     @Autowired
     AuthorDao authorDao;
 
@@ -39,16 +37,15 @@ public class DaoIntegrationTest {
         book.setPublisher("Self");
         book.setTitle("my book");
         Book saved = bookDao.saveNewBook(book);
+        long savedId = saved.getId();
 
-        bookDao.deleteBookById(saved.getId());
+        bookDao.deleteBookById(savedId);
 
-        assertThrows(JpaObjectRetrievalFailureException.class, () -> {
-            bookDao.getById(saved.getId());
-        });
+        assertThrows(EmptyResultDataAccessException.class, () -> bookDao.findBookById(savedId));
     }
 
     @Test
-    void updateBookTest() {
+    void testUpdateBook() {
         Book book = new Book();
         book.setIsbn("1234");
         book.setPublisher("Self");
@@ -60,9 +57,9 @@ public class DaoIntegrationTest {
         Book saved = bookDao.saveNewBook(book);
 
         saved.setTitle("New Book");
-        bookDao.updateBook(saved);
+        Book updatedBook = bookDao.updateBook(saved);
 
-        Book fetched = bookDao.getById(saved.getId());
+        Book fetched = bookDao.findBookById(updatedBook.getId());
 
         assertThat(fetched.getTitle()).isEqualTo("New Book");
     }
@@ -91,7 +88,7 @@ public class DaoIntegrationTest {
 
     @Test
     void testGetBook() {
-        Book book = bookDao.getById(3L);
+        Book book = bookDao.findBookById(3L);
 
         assertThat(book.getId()).isNotNull();
     }
@@ -102,13 +99,16 @@ public class DaoIntegrationTest {
         author.setFirstName("john");
         author.setLastName("t");
 
+        System.out.printf("%n###### the author to delete: %s %s ######%n%n"
+                , author.getFirstName(), author.getLastName());
+
         Author saved = authorDao.saveNewAuthor(author);
+        Long savedId = saved.getId();
 
-        authorDao.deleteAuthorById(saved.getId());
+        authorDao.deleteAuthorById(savedId);
 
-        assertThrows(JpaObjectRetrievalFailureException.class, () -> {
-            Author deleted = authorDao.getById(saved.getId());
-        });
+        assertThrows(EmptyResultDataAccessException.class, () ->
+                authorDao.findAuthorById(savedId));
 
     }
 
@@ -118,12 +118,20 @@ public class DaoIntegrationTest {
         author.setFirstName("john");
         author.setLastName("t");
 
+        System.out.printf("%n###### the author to update: %s %s ######%n%n"
+                , author.getFirstName(), author.getLastName());
+
         Author saved = authorDao.saveNewAuthor(author);
 
         saved.setLastName("Thompson");
         Author updated = authorDao.updateAuthor(saved);
 
         assertThat(updated.getLastName()).isEqualTo("Thompson");
+        // Made the test more accurate
+        assertThat(saved.getId()).isEqualTo(updated.getId());
+
+        System.out.printf("%n###### the updated author name: %s %s -ID: %d ######%n%n"
+                , updated.getFirstName(), updated.getLastName(),updated.getId());
     }
 
     @Test
@@ -134,6 +142,10 @@ public class DaoIntegrationTest {
         Author saved = authorDao.saveNewAuthor(author);
 
         assertThat(saved).isNotNull();
+        assertThat(saved.getId()).isNotNull();
+
+        System.out.printf("%n###### the saved author name: %s %s -ID: %s ######%n%n"
+                , author.getFirstName(), author.getLastName(), author.getId());
     }
 
     @Test
@@ -141,6 +153,7 @@ public class DaoIntegrationTest {
         Author author = authorDao.findAuthorByName("Craig", "Walls");
 
         assertThat(author).isNotNull();
+        System.out.printf("%n###### the found author name: %s ######%n%n", author.getLastName());
     }
 
     @Test
@@ -151,11 +164,10 @@ public class DaoIntegrationTest {
     }
 
     @Test
-    void testGetAuthor() {
-
-        Author author = authorDao.getById(1L);
-
-        assertThat(author).isNotNull();
+    void testGetAuthorById() {
+        Author author = authorDao.findAuthorById(2L);
+        assertThat(author.getId()).isNotNull();
+        System.out.printf("%n###### the found author name: %s ######%n%n", author.getLastName());
 
     }
 }

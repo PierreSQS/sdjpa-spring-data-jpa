@@ -3,7 +3,6 @@ package guru.springframework.jdbc.dao;
 import guru.springframework.jdbc.domain.Author;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class AuthorDaoJDBCTemplate implements AuthorDao {
     }
 
     @Override
-    public Author getById(Long id) {
+    public Author findAuthorById(Long id) {
         return null;
     }
 
