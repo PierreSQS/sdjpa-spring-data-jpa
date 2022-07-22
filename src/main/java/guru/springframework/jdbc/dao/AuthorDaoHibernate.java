@@ -6,11 +6,15 @@ import org.springframework.data.domain.Pageable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
+import java.util.Collections;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 /**
- * Created by jt on 11/27/21.
+ * Modified by Pierrot on 7/22/22.
  */
+@Component
 public class AuthorDaoHibernate implements AuthorDao {
 
     private final EntityManagerFactory emf;
@@ -28,14 +32,14 @@ public class AuthorDaoHibernate implements AuthorDao {
         EntityManager em = getEntityManager();
 
         try {
-            String hql = "SELECT a FROM Author a where a.lastName = :lastName ";
+            String jpql = "SELECT a FROM Author a where a.lastName = :lastName ";
 
             if (pageable.getSort().getOrderFor("firstname") != null) {
-                hql = hql + " order by a.firstName " + pageable.getSort().getOrderFor("firstname")
+                jpql = jpql + " order by a.firstName " + pageable.getSort().getOrderFor("firstname")
                         .getDirection().name();
             }
 
-            TypedQuery<Author> query = em.createQuery(hql, Author.class);
+            TypedQuery<Author> query = em.createQuery(jpql, Author.class);
 
             query.setParameter("lastName", lastname);
             query.setFirstResult(Math.toIntExact(pageable.getOffset()));
@@ -43,7 +47,7 @@ public class AuthorDaoHibernate implements AuthorDao {
 
             return query.getResultList();
         } catch (NullPointerException npe){
-            return null;
+            return Collections.emptyList();
         }finally {
             em.close();
         }

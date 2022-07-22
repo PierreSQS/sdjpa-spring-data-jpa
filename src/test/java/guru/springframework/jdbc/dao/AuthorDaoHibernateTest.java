@@ -4,6 +4,7 @@ import guru.springframework.jdbc.domain.Author;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -25,11 +26,12 @@ class AuthorDaoHibernateTest {
     @Autowired
     EntityManagerFactory entityManagerFactory;
 
+    @Autowired
+    @Qualifier("authorDaoHibernate")
     AuthorDao authorDao;
 
     @BeforeEach
     void setUp() {
-        authorDao = new AuthorDaoHibernate(entityManagerFactory);
     }
 
     @Test

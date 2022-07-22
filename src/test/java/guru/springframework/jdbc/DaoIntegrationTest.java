@@ -7,6 +7,7 @@ import guru.springframework.jdbc.domain.Book;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -25,9 +26,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class DaoIntegrationTest {
     @Autowired
+    @Qualifier("authorDaoImpl")
     AuthorDao authorDao;
 
     @Autowired
+    @Qualifier("bookDaoImpl")
     BookDao bookDao;
 
     @Test

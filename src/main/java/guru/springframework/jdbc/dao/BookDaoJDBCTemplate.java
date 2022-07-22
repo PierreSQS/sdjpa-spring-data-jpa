@@ -4,12 +4,14 @@ import guru.springframework.jdbc.domain.Book;
 import java.util.Collections;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
- * Modified by Pierrot on 7/21/22.
+ * Updated by Pierrot on 7/22/22.
  */
+@Component
 public class BookDaoJDBCTemplate implements BookDao {
     private final JdbcTemplate jdbcTemplate;
 

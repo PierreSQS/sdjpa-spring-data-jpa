@@ -5,6 +5,7 @@ import guru.springframework.jdbc.domain.Book;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -26,11 +27,12 @@ class AuthorDaoJDBCTemplateTest {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    @Qualifier("authorDaoJDBCTemplate")
     AuthorDao authorDao;
 
     @BeforeEach
     void setUp() {
-        authorDao = new AuthorDaoJDBCTemplate(jdbcTemplate);
     }
 
     @Test

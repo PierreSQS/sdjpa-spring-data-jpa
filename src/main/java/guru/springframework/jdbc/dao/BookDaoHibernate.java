@@ -7,11 +7,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 /**
- * Created by jt on 11/25/21.
+ * Modified by Pierrot on 7/22/22.
  */
+@Component
 public class BookDaoHibernate implements BookDao {
     private final EntityManagerFactory emf;
 
