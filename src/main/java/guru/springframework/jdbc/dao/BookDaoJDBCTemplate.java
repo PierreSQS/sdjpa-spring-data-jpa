@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Updated by Pierrot on 7/22/22.
@@ -22,8 +23,8 @@ public class BookDaoJDBCTemplate implements BookDao {
     @Override
     public List<Book> findAllBooksSortByTitle(Pageable pageable) {
         try {
-            String sql = BookMapper.SELECT_BOOK_ORDER_BY_TITLE + pageable
-                    .getSort().getOrderFor("title").getDirection().name()
+            String sql = BookMapper.SELECT_BOOK_ORDER_BY_TITLE + Objects.requireNonNull(pageable
+                    .getSort().getOrderFor("title")).getDirection().name()
                     + " limit ? offset ?";
 
             System.out.println(sql);

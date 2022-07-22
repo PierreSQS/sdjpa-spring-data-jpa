@@ -10,6 +10,7 @@ import java.util.Collections;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Modified by Pierrot on 7/22/22.
@@ -35,7 +36,7 @@ public class AuthorDaoHibernate implements AuthorDao {
             String jpql = "SELECT a FROM Author a where a.lastName = :lastName ";
 
             if (pageable.getSort().getOrderFor("firstname") != null) {
-                jpql = jpql + " order by a.firstName " + pageable.getSort().getOrderFor("firstname")
+                jpql = jpql + " order by a.firstName " + Objects.requireNonNull(pageable.getSort().getOrderFor("firstname"))
                         .getDirection().name();
             }
 

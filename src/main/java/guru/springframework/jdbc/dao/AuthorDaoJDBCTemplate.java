@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Updated by Pierrot on 7/22/22.
@@ -28,8 +29,8 @@ public class AuthorDaoJDBCTemplate implements AuthorDao {
             sb.append(AuthorMapper.SELECT_AUTHOR_BY_LAST_NAME);
 
             if (pageable.getSort().getOrderFor("firstname") != null) {
-                sb.append("order by first_name ").append(pageable.getSort()
-                        .getOrderFor("firstname").getDirection().name());
+                sb.append("order by first_name ").append(Objects.requireNonNull(pageable.getSort()
+                        .getOrderFor("firstname")).getDirection().name());
             }
 
             sb.append(" limit ? offset ?");
