@@ -25,8 +25,8 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public List<Book> findAllBooksSortByTitle(Pageable pageable) {
-        return null;
+    public List<Book> findAllBooksSortByTitle(Pageable pageableWithSortByTitleWithDir) {
+        return bookRepo.findAll(pageableWithSortByTitleWithDir).getContent();
     }
 
     @Override

@@ -39,6 +39,7 @@ class BookDaoImplTest {
         assertThat(books)
                 .isNotNull()
                 .hasSize(10);
+        printBooksDebugLog(books);
     }
 
     @Test
