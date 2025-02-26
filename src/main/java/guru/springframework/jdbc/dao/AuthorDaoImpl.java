@@ -23,7 +23,7 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author findAuthorByName(String firstName, String lastName) {
-        return null;
+        return authorRepo.findByFirstNameAndLastName(firstName, lastName);
     }
 
     @Override
