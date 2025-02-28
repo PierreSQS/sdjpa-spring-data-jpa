@@ -19,7 +19,8 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author getById(Long id) {
-        return authorRepo.findById(id).orElse(null);
+        return authorRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Author with ID " + id + " not found"));
     }
 
     @Override
