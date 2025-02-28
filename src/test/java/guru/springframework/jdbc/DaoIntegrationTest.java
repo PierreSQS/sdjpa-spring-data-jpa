@@ -1,8 +1,8 @@
 package guru.springframework.jdbc;
 
 import guru.springframework.jdbc.dao.AuthorDao;
-import guru.springframework.jdbc.dao.BookDao;
 import guru.springframework.jdbc.dao.AuthorDaoImpl;
+import guru.springframework.jdbc.dao.BookDao;
 import guru.springframework.jdbc.dao.BookDaoImpl;
 import guru.springframework.jdbc.domain.Author;
 import guru.springframework.jdbc.domain.Book;
@@ -12,20 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.context.ActiveProfiles;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Created by jt on 8/28/21.
+ * Modified by Pierrot on 28-02-2025.
  */
 @ActiveProfiles("local")
 @DataJpaTest
 @Import({AuthorDaoImpl.class, BookDaoImpl.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class DaoIntegrationTest {
+class DaoIntegrationTest {
     @Autowired
     AuthorDao authorDao;
 
@@ -40,11 +40,13 @@ public class DaoIntegrationTest {
         book.setTitle("my book");
         Book saved = bookDao.saveNewBook(book);
 
-        bookDao.deleteBookById(saved.getId());
+        Long savedId = saved.getId();
+        bookDao.deleteBookById(savedId);
 
-        assertThrows(JpaObjectRetrievalFailureException.class, () -> {
-            bookDao.getById(saved.getId());
-        });
+        assertThatThrownBy(() -> bookDao.getById(savedId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("Book with ID " + savedId + " not found");
+
     }
 
     @Test
@@ -53,9 +55,6 @@ public class DaoIntegrationTest {
         book.setIsbn("1234");
         book.setPublisher("Self");
         book.setTitle("my book");
-
-        Author author = new Author();
-        author.setId(3L);
 
         Book saved = bookDao.saveNewBook(book);
 
@@ -73,9 +72,6 @@ public class DaoIntegrationTest {
         book.setIsbn("1234");
         book.setPublisher("Self");
         book.setTitle("my book");
-
-        Author author = new Author();
-        author.setId(3L);
 
         Book saved = bookDao.saveNewBook(book);
 
@@ -104,11 +100,13 @@ public class DaoIntegrationTest {
 
         Author saved = authorDao.saveNewAuthor(author);
 
-        authorDao.deleteAuthorById(saved.getId());
+        Long savedId = saved.getId();
+        authorDao.deleteAuthorById(savedId);
 
-        assertThrows(JpaObjectRetrievalFailureException.class, () -> {
-            Author deleted = authorDao.getById(saved.getId());
-        });
+        assertThatThrownBy(() -> authorDao.getById(savedId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("Author with ID " + savedId + " not found");
+
 
     }
 
@@ -145,9 +143,13 @@ public class DaoIntegrationTest {
 
     @Test
     void testGetAuthorByNameNotFound() {
-        assertThrows(EntityNotFoundException.class, () -> {
-            Author author = authorDao.findAuthorByName("foo", "bar");
-        });
+        // AssertJ Assertion
+        assertThatThrownBy(() -> authorDao.findAuthorByName("foo", "bar"))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("Author with name foo bar not found");
+
+        // JUnit 5 Assertion
+        assertThrows(EntityNotFoundException.class, () -> authorDao.findAuthorByName("foo", "bar"));
     }
 
     @Test

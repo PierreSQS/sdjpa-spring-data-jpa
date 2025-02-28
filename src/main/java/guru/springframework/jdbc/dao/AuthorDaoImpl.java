@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 
 /**
- * Created by jt on 8/28/21.
+ * Modified by Pierrot on 28-02-2025.
  */
 @Component
 public class AuthorDaoImpl implements AuthorDao {
@@ -21,13 +21,15 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author getById(Long id) {
-        return authorRepository.getById(id);
+        return authorRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Author with ID " + id + " not found"));
     }
 
     @Override
     public Author findAuthorByName(String firstName, String lastName) {
         return authorRepository.findAuthorByFirstNameAndLastName(firstName, lastName)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Author with name " + firstName + " "
+                        + lastName + " not found"));
     }
 
     @Override
@@ -38,7 +40,8 @@ public class AuthorDaoImpl implements AuthorDao {
     @Transactional
     @Override
     public Author updateAuthor(Author author) {
-        Author foundAuthor = authorRepository.getById(author.getId());
+        Author foundAuthor = authorRepository.findById(author.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Author with ID " + author.getId() + " not found"));
         foundAuthor.setFirstName(author.getFirstName());
         foundAuthor.setLastName(author.getLastName());
         return authorRepository.save(foundAuthor);

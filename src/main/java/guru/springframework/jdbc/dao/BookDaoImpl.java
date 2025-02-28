@@ -8,7 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by jt on 10/23/21.
+ * Modified by Pierrot on 28-02-2025.
  */
 @Component
 public class BookDaoImpl implements BookDao {
@@ -21,7 +21,8 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Book getById(Long id) {
-        return bookRepository.getById(id);
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book with ID " + id + " not found"));
     }
 
     @Override
@@ -37,7 +38,8 @@ public class BookDaoImpl implements BookDao {
     @Transactional
     @Override
     public Book updateBook(Book book) {
-        Book foundBook = bookRepository.getById(book.getId());
+        Book foundBook = bookRepository.findById(book.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Book with ID " + book.getId() + " not found"));
         foundBook.setIsbn(book.getIsbn());
         foundBook.setPublisher(book.getPublisher());
         foundBook.setAuthorId(book.getAuthorId());
