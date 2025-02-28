@@ -1,6 +1,5 @@
 package guru.springframework.jdbc;
 
-import guru.springframework.jdbc.domain.Book;
 import guru.springframework.jdbc.repositories.BookRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +13,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Created by jt on 11/21/21.
+ * Modified by Pierrot on 28-02-2025.
  */
 @ActiveProfiles("local")
 @DataJpaTest
 @ComponentScan(basePackages = {"guru.springframework.jdbc.dao"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class BookRepositoryTest {
+class BookRepositoryTest {
 
     @Autowired
     BookRepository bookRepository;
@@ -28,9 +27,7 @@ public class BookRepositoryTest {
     @Test
     void testEmptyResultException() {
 
-        assertThrows(EmptyResultDataAccessException.class, () -> {
-            Book book = bookRepository.readByTitle("foobar4");
-        });
+        assertThrows(EmptyResultDataAccessException.class, () -> bookRepository.readByTitle("foobar4"));
     }
 
     @Test
