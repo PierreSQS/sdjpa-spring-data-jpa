@@ -9,8 +9,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Modified by Pierrot on 28-02-2025.
@@ -27,17 +27,18 @@ class BookRepositoryTest {
     @Test
     void testEmptyResultException() {
 
-        assertThrows(EmptyResultDataAccessException.class, () -> bookRepository.readByTitle("foobar4"));
-    }
+        assertThatThrownBy(() -> bookRepository.readByTitle("foobar"))
+                .isInstanceOf(EmptyResultDataAccessException.class);
+   }
 
     @Test
     void testNullParam() {
-        assertNull(bookRepository.getByTitle(null));
+        assertThat(bookRepository.getByTitle(null)).isNull();
     }
 
     @Test
     void testNoException() {
 
-        assertNull(bookRepository.getByTitle("foo"));
+        assertThat(bookRepository.getByTitle("foo")).isNull();
     }
 }
