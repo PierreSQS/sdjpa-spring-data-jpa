@@ -4,9 +4,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
+
 import java.util.Objects;
 
-@Entity
+@NamedQuery(
+        name = "Book.findByTitleJpaNamed",
+        query = "SELECT b FROM Book b WHERE b.title = :title"
+)@Entity
 public class Book {
 
     @Id
