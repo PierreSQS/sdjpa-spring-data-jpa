@@ -31,6 +31,13 @@ class BookRepositoryTest {
     BookRepository bookRepository;
 
     @Test
+    void testBookQueryNamed() {
+        Book book = bookRepository.findBookByTitleWithQueryNamed("Clean Code");
+
+        assertThat(book.getTitle()).isEqualTo("Clean Code");
+    }
+
+    @Test
     void testBookQuery() {
         Book book = bookRepository.findBookByTitleWithQuery("Clean Code");
 
