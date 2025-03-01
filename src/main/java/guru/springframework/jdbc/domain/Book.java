@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @NamedQuery(
         name = "Book.findByTitleJpaNamed",
-        query = "SELECT b FROM Book b WHERE b.title = :title"
+        query = "SELECT b FROM Book b WHERE b.title = :titleParam"
 )@Entity
 public class Book {
 
